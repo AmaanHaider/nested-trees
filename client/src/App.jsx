@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import data from '../data.json';
 import TreeNode from './components/TreeNode';
+import { Box, Button, Center } from '@chakra-ui/react';
 
 const App = () => {
   const [treeData, setTreeData] = useState(data);
@@ -29,7 +30,14 @@ const App = () => {
 
   return (
     <div>
+      <Box m="2%">
       <TreeNode data={treeData} onAddChild={handleAddChild} />
+      <Box marginTop="4%">
+        <Center>
+          <Button>Export</Button>
+        </Center>
+      </Box>
+      </Box>
     </div>
   );
 };

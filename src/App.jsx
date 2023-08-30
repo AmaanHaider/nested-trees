@@ -1,27 +1,36 @@
-
-import React  from 'react';
-import Tree from './components/Tree';
-
+import React, { useState } from 'react';
+import data from '../data.json';
+import TreeNode from './components/TreeNode';
 
 const App = () => {
-  const treeData = {
-    name: 'root',
-    children: [
-      {
-        name: 'child1',
-        children: [
-          { name: 'child1-child1', data: "c1-c1 Hello" },
-          { name: 'child1-child2', data: "c1-c2 JS" }
-        ]
-      },
-      { name: 'child2', data: "c2 World" }
-    ]
+  const [treeData, setTreeData] = useState(data);
+
+  const handleAddChild = (parentNode, newChild) => {
+    const updatedTreeData = { ...treeData };
+    const addNewChild = (node) => {
+      if (node === parentNode) {
+        if (!node.children) {
+          node.children = [];
+        }
+        node.children.push(newChild);
+        return true;
+      }
+      if (node.children) {
+        for (const child of node.children) {
+          if (addNewChild(child)) return true;
+        }
+      }
+      return false;
+    };
+
+    addNewChild(updatedTreeData);
+    setTreeData(updatedTreeData);
   };
 
   return (
-      <div className="App">
-        <Tree tree={treeData} />
-      </div>
+    <div>
+      <TreeNode data={treeData} onAddChild={handleAddChild} />
+    </div>
   );
 };
 

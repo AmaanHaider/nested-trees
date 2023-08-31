@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import TreeNode from './components/TreeNode';
 import { Box, Button, Center, Code } from '@chakra-ui/react';
 import data from '../data.json'
-
 const App = () => {
-  const [treeData, setTreeData] = useState(data);
+
+  const [treeData, setTreeData] = useState(data)
   const [exportData, setExportData] = useState("");
 
   const handleAddChild = (parentNode, newChild) => {
     const updatedTreeData = { ...treeData };
-    
     const addNewChild = (node) => {
       if (node === parentNode) {
         if (!node.children) {
           node.children = [];
         }
-        const childNode = { name: newChild, data: "Data" }; 
-        node.children.push(childNode);
+        node.children.push(newChild);
         return true;
       }
       if (node.children) {
@@ -31,35 +29,34 @@ const App = () => {
     setTreeData(updatedTreeData);
   };
 
-  const handleExport = () => {
-    const exportedTree = JSON.stringify(treeData, null, 2);
-    setExportData(exportedTree);
-  };
-
-  const handleDataChange = (parentNode, newData) => {
+  const handleUpdateData = (updatedNode) => {
+    // Find the updated node in the treeData and update it
     const updatedTreeData = { ...treeData };
-
-    const updateData = (node) => {
-      if (node === parentNode) {
-        node.data = newData;
+    const updateDataInTree = (node) => {
+      if (node === updatedNode) {
         return true;
       }
       if (node.children) {
         for (const child of node.children) {
-          if (updateData(child)) return true;
+          if (updateDataInTree(child)) return true;
         }
       }
       return false;
     };
 
-    updateData(updatedTreeData);
+    updateDataInTree(updatedTreeData);
     setTreeData(updatedTreeData);
+  };
+
+  const handleExport = () => {
+    const exportedTree = JSON.stringify(treeData, ['name', 'children', 'data'], 2);
+    setExportData(exportedTree);
   };
 
   return (
     <div>
       <Box m="2%">
-        <TreeNode data={treeData} onAddChild={handleAddChild} onDataChange={handleDataChange} />
+        <TreeNode data={treeData} onAddChild={handleAddChild} onUpdateData={handleUpdateData} />
         <Box marginTop="4%">
           <Center>
             <Button onClick={handleExport}>Export</Button>

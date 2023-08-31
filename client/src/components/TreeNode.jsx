@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, Collapse, Button, Input, Center } from "@chakra-ui/react";
+import React, { useState } from 'react';
+import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Box, Collapse, Button, Input, Center } from '@chakra-ui/react';
 
-const TreeNode = ({ data, onAddChild, onDataChange }) => {
+const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
   const [isOpen, setIsOpen] = useState(data.children ? true : false);
   const [showAddChild, setShowAddChild] = useState(false);
-  const [newChildName, setNewChildName] = useState("New Child");
-  
+  const [newChildName, setNewChildName] = useState('New Child');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState(data.name);
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -15,17 +17,37 @@ const TreeNode = ({ data, onAddChild, onDataChange }) => {
     setShowAddChild(true);
   };
 
-  const handleAddChild = (parent, newChild) => {
-    onAddChild(parent, newChild);
+  const handleAddChild = () => {
+    if (!data.children) {
+      data.children = [];
+    }
+    data.children.push({ name: newChildName, data: 'Data' });
+    onAddChild(data.name);
+    setShowAddChild(false);
   };
 
   const handleNewChildNameChange = (event) => {
     setNewChildName(event.target.value);
   };
 
-  const handleDataFieldChange = (event) => {
+  const handleStartEditingName = () => {
+    setIsEditingName(true);
+  };
+
+  const handleEditNameChange = (event) => {
+    setEditedName(event.target.value);
+  };
+
+  const handleSaveName = () => {
+    setIsEditingName(false);
+    data.name = editedName;
+    onUpdateParentName(data.name); // Call the callback function to update parent name in the parent component
+  };
+
+  const handleDataChange = (event) => {
     const newData = event.target.value;
-    onDataChange(data, newData); 
+    data.data = newData;
+    onUpdateData(data);
   };
 
   return (
@@ -33,19 +55,35 @@ const TreeNode = ({ data, onAddChild, onDataChange }) => {
       <Box
         onClick={handleToggle}
         cursor="pointer"
-        maxW={"full"}
+        maxW="full"
         style={{
-          display: "flex",
-          height: "60px",
-          alignItems: "center",
-          backgroundColor: "#6cacef",
-          marginBottom: "10px",
+          display: 'flex',
+          height: '60px',
+          alignItems: 'center',
+          backgroundColor: '#6cacef',
+          marginBottom: '10px',
         }}
       >
         {isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
-        <span style={{ marginLeft: "10px", flex: "1" }}>{data.name}</span>
+        {isEditingName ? (
+          <Input
+            type="text"
+            backgroundColor="white"
+            value={editedName}
+            onChange={handleEditNameChange}
+            onBlur={handleSaveName}
+            autoFocus
+          />
+        ) : (
+          <span
+            style={{ marginLeft: '10px', flex: '1' }}
+            onClick={handleStartEditingName}
+          >
+            {data.name}
+          </span>
+        )}
         {showAddChild ? (
-          <div style={{ padding: "1%", height: "100%", display: "flex", gap: "2%" }}>
+          <div style={{ padding: '1%', height: '100%', display: 'flex', gap: '2%' }}>
             <Input
               type="text"
               backgroundColor="white"
@@ -53,16 +91,12 @@ const TreeNode = ({ data, onAddChild, onDataChange }) => {
               onChange={handleNewChildNameChange}
               placeholder="Type Child Name"
             />
-            <Button size="sm" bg="#e6e6e5" onClick={() => handleAddChild(data, newChildName)}>
+            <Button size="sm" bg="#e6e6e5" onClick={handleAddChild}>
               Add Child
             </Button>
           </div>
         ) : (
-          <div
-            style={{
-              margin: "10px",
-            }}
-          >
+          <div style={{ margin: '10px' }}>
             <Button size="sm" bg="#e6e6e5" onClick={addChild}>
               Add Child
             </Button>
@@ -73,29 +107,34 @@ const TreeNode = ({ data, onAddChild, onDataChange }) => {
       <Collapse
         in={isOpen}
         style={{
-          border: "2px solid black",
-          margin: "5px",
-          padding: "0.5%",
+          border: '2px solid black',
+          margin: '5px',
+          padding: '0.5%',
         }}
       >
         {data.children
           ? data.children.map((child) => (
-              <div key={child.name} style={{ marginLeft: "20px" }}>
-                <TreeNode data={child} onAddChild={handleAddChild} onDataChange={onDataChange} />
+              <div key={child.name} style={{ marginLeft: '20px' }}>
+                <TreeNode
+                  data={child}
+                  onAddChild={onAddChild}
+                  onUpdateData={onUpdateData}
+                  onUpdateParentName={onUpdateParentName}
+                />
               </div>
             ))
           : null}
 
         {data.data && (
-          <div style={{ marginLeft: "20px" }}>
+          <div style={{ marginLeft: '20px' }}>
             <Box display="flex" gap="5">
               <Center>
-                <p>Data:</p>
+                <p>Data : </p>
               </Center>
               <Input
                 w="30%"
-                value={data.data} 
-                onChange={handleDataFieldChange} 
+                value={data.data}
+                onChange={handleDataChange}
               />
             </Box>
           </div>

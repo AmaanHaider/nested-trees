@@ -18,7 +18,7 @@ const TreeNode = ({ data, onAddChild }) => {
     if (!data.children) {
       data.children = [];
     }
-    data.children.push({ name: newChildName, data: "Empty" });
+    data.children.push({ name: newChildName, data: "" });
     onAddChild(data.name);
     setShowAddChild(false);
   };
@@ -92,9 +92,9 @@ const TreeNode = ({ data, onAddChild }) => {
               <Center>
                 <p>Data : </p>
               </Center>
-              <Input w="30%" value={data.data} />
+              <Input w="30%" defaultValue={data.data} />
             </Box>
-            {/* <p>Data: {data.data}</p> */}
+
           </div>
         )}
       </Collapse>

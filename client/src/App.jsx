@@ -30,7 +30,6 @@ const App = () => {
   };
 
   const handleUpdateData = (updatedNode) => {
-    // Find the updated node in the treeData and update it
     const updatedTreeData = { ...treeData };
     const updateDataInTree = (node) => {
       if (node === updatedNode) {

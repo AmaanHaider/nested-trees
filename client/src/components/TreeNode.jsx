@@ -41,7 +41,7 @@ const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
   const handleSaveName = () => {
     setIsEditingName(false);
     data.name = editedName;
-    onUpdateParentName(data.name); // Call the callback function to update parent name in the parent component
+    onUpdateParentName(data.name); 
   };
 
   const handleDataChange = (event) => {
@@ -82,6 +82,7 @@ const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
             {data.name}
           </span>
         )}
+        
         {showAddChild ? (
           <div style={{ padding: '1%', height: '100%', display: 'flex', gap: '2%' }}>
             <Input

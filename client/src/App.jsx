@@ -15,7 +15,7 @@ const App = () => {
         if (!node.children) {
           node.children = [];
         }
-        const childNode = { name: newChild, data: "Empty" }; 
+        const childNode = { name: newChild, data: "Data" }; 
         node.children.push(childNode);
         return true;
       }

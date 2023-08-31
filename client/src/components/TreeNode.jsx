@@ -41,7 +41,7 @@ const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
   const handleSaveName = () => {
     setIsEditingName(false);
     data.name = editedName;
-    onUpdateParentName(data.name); 
+    onUpdateParentName(data.name);
   };
 
   const handleDataChange = (event) => {
@@ -53,7 +53,6 @@ const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
   return (
     <Box>
       <Box
-        onClick={handleToggle}
         cursor="pointer"
         maxW="full"
         style={{
@@ -64,7 +63,25 @@ const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
           marginBottom: '10px',
         }}
       >
-        {isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
+        <div
+          onClick={handleToggle}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          {isOpen ? (
+            <Button  bg="#e6e6e5" ml="4" onClick={handleToggle}>
+              <ChevronDownIcon  />
+            </Button>
+          ) : (
+            <Button bg="#e6e6e5" ml="4" onClick={handleToggle}>
+
+              <ChevronRightIcon  />
+            </Button>
+          )}
+        </div>
         {isEditingName ? (
           <Input
             type="text"
@@ -76,13 +93,17 @@ const TreeNode = ({ data, onAddChild, onUpdateData, onUpdateParentName }) => {
           />
         ) : (
           <span
-            style={{ marginLeft: '10px', flex: '1' }}
+            style={{
+              marginLeft: '10px',
+              flex: '1',
+              cursor: 'pointer',
+            }}
             onClick={handleStartEditingName}
           >
             {data.name}
           </span>
         )}
-        
+
         {showAddChild ? (
           <div style={{ padding: '1%', height: '100%', display: 'flex', gap: '2%' }}>
             <Input
